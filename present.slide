@@ -1,0 +1,212 @@
+BitTorrent Protocol
+What is BitTorrent? How it works?
+Tags: bittorrent, torrent, protocol, p2p
+
+Cenk Altı
+put.io
+http://cenkalti.net/
+@cilginkorsancek
+
+http://github.com/cenkalti/presentation-bittorrent
+
+* BitTorrent Protocol
+
+BitTorrent is a peer-to-peer file sharing protocol designed by Bram Cohen in 2001.
+
+.image bram.jpg _ 200
+
+BitTorrent is designed to facilitate file transfers among multiple peers across unreliable networks.
+
+* Features
+
+- P2P
+- Download in pieces
+- Upload while you are downloading
+
+* Uses
+
+- Distributing big files with minimal bandwidth cost
+- Linux distributions
+- Game publishers
+- Facebook, Twitter uses for app deployment
+- 2004: 35% of all Internet traffic
+- 2014: decreased to 3.35%
+
+* How to use it?
+
+- Go to a tracker
+- Search for a file
+- Download a .torrent file
+- Open the file with BT client
+- Wait for finish
+
+* Notable Clients
+
+- Mainline (Python)
+- µTorrent/BitTorrent (C++) *most popular
+- Transmission (C++)
+- rTorrent (C++)
+- Vuze/Azureus (Java)
+- Deluge (Python, QT)
+- libtorrent (C++)
+
+* BT Keywords
+
+- Piece
+- Seed
+- Leech
+- Peer
+- Swarm
+- Tracker
+- Torrent [File]
+- Magnet Link
+- Ratio
+- DHT
+
+* Tracker
+
+.image mininova.png _ 600
+
+- HTTP POST
+    http://some.tracker.com/announce
+- Map
+    {
+        "2d066c94480adcf52bfd1185a75eb4ddc1777673": ["37.154.169.232", "173.194.78.102"],
+        "F60CC95E3566AF84C1AB223FD4CE80FA88E6438A": ["95.211.241.25", "17.178.96.59"]
+    }
+
+* Tracker Request
+
+Request (HTTP POST)
+
+    info_hash
+    ip
+    port
+    peer_id
+    uploaded
+    downloaded
+    left
+    event [none, started, stopped, completed]
+    numwant
+
+Response
+
+    failure reason
+    warning message
+    interval
+    min interval
+    complete (seeder count)
+    incomplete (leecher count)
+    peers [peer id, ip, port]
+
+* Torrent File
+
+.image transmission-show.png _ 600
+
+* Torrent File (JSON)
+
+    {
+      "Info": {
+        "piece_length": 524288,
+        "pieces": "tavHNcXTGFFZlZ596kt0pnOHlN3R5G0BG0+wU3QGjXlx29vOKuSYoaXlRyTpW...",
+        "private": 0,
+        "name": "ubuntu-14.04.1-server-amd64.iso",
+        "length": 599785472,
+        "files": null
+      },
+      "Announce": "http://torrent.ubuntu.com:6969/announce",
+      "AnnounceList": [
+        [
+          "http://torrent.ubuntu.com:6969/announce"
+        ],
+        [
+          "http://ipv6.torrent.ubuntu.com:6969/announce"
+        ]
+      ],
+      "CreationDate": 1406245742,
+      "Comment": "Ubuntu CD releases.ubuntu.com",
+      "CreatedBy": "",
+      "Encoding": ""
+    }
+
+* Bencoding
+
+.image bencode.png _ 600
+
+* Peer Protocol
+
+- TCP
+- µTP: Micro Transfer Protocol (UDP)
+- Peer ID (20 byte)
+- Handshake
+    <19><BitTorrent protocol><reserved><info_hash><peer_id>
+- Choking
+- Interest
+
+* Peer Messages
+
+Message Structure
+
+    <length><type><payload>
+
+Message Types:
+
+    0:  choke
+    1:  unchoke
+    2:  interested
+    3:  not interested
+    4:  have
+    5:  bitfield
+    6:  request
+    7:  piece
+    8:  cancel
+
+* Algorithms
+
+- Queueing
+- Piece Download Strategy
+- End Game
+- Optimistic Unchoking
+
+* Extension Protocol
+
+- Enabled via a flag during handshake
+- BEP 6: Fast Peers Extension
+    Have All
+    Have None
+    Reject Request
+- BEP 9: Extension for Peers to Send Metadata Files
+- BEP 5: DHT
+- Connection Obfuscation
+
+* Connection Obfuscation (Message Stream Encryption)
+
+- ISPs throttle BT connections (Traffic Shaping)
+- Obfuscation, Not Encryption
+- Reasonable security against passive eavesdroppers
+- Diffie–Hellman key exchange
+- RC4
+- Random paddings
+
+.link https://github.com/cenkalti/mse
+
+* DHT
+
+- Decentralized Hash Table
+- Find peers without a tracker
+- Every peer becomes a tracker
+- Must be bootstrapped
+
+* Rain
+
+.link http://github.com/cenkalti/rain
+
+- Pet project
+- Early stage
+- Go
+- May never finish
+
+* We are hiring!
+
+.image amblem.png _ 400
+
